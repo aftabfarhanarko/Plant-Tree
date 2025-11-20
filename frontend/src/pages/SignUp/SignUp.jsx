@@ -1,4 +1,4 @@
-import { data, Link, useLocation, useNavigate } from "react-router";
+import {  Link, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
@@ -14,44 +14,43 @@ const SignUp = () => {
   } = useForm();
   const { createUser, updateUserProfile, signInWithGoogle, loading } =
     useAuth();
-    const axiosw = axios;
+  const axiosw = axios;
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state || "/";
 
- // form submit handler
-  const handelSignUp =  data => {
-     console.log("Signup User", data);
-     const email = data.email;
-     const password = data.password;
-     const displayName = data.name;
-     const profileImg = data.profileI[0]
-     console.log(profileImg);
-     
+  // form submit handler
+  const handelSignUp = (data) => {
+    console.log("Signup User", data);
+    const email = data.email;
+    const password = data.password;
+    const displayName = data.name;
+    const profileImg = data.profileI[0];
+    console.log(profileImg);
+
     // IBB_KEY
-     createUser(email, password)
-     .then(result => {
-      console.log(result)
-      
-      const fromData = new FormData();
-      fromData.append("image", profileImg);
-      const uriIBB = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_imge_hoset}`;
-      axiosw.post(uriIBB, fromData)
-      .then(res => {
-        const photoURL = res.data.data.url;
-        
-        updateUserProfile(displayName, photoURL)
-        .then(() => {
-          toast.success("Signup Successful")
-          navigate(from)
-        })
-        
+    createUser(email, password)
+      .then((result) => {
+        console.log(result);
+
+        const fromData = new FormData();
+        fromData.append("image", profileImg);
+        const uriIBB = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_imge_hoset
+        }`;
+        axiosw.post(uriIBB, fromData).then((res) => {
+          const photoURL = res.data.data.url;
+
+          updateUserProfile(displayName, photoURL).then(() => {
+            toast.success("Signup Successful");
+            navigate(from);
+          });
+        });
       })
-     }).catch(err => {
-      toast.error(err?.message)
-     }) 
-     
-  }
+      .catch((err) => {
+        toast.error(err?.message);
+      });
+  };
 
   // Handle Google Signin
   const handleGoogleSignIn = async () => {
@@ -105,7 +104,7 @@ const SignUp = () => {
               </label>
               <input
                 type="file"
-                  {...register("profileI")}
+                {...register("profileI")}
                 id="image"
                 accept="image/*"
                 className="block w-full text-sm text-gray-500
@@ -130,7 +129,7 @@ const SignUp = () => {
                 type="email"
                 name="email"
                 id="email"
-                  {...register("email")}
+                {...register("email")}
                 placeholder="Enter Your Email Here"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
                 data-temp-mail-org="0"
@@ -146,7 +145,7 @@ const SignUp = () => {
                 type="password"
                 name="password"
                 autoComplete="new-password"
-                  {...register("password")}
+                {...register("password")}
                 placeholder="*******"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
               />
