@@ -91,7 +91,7 @@ const SignUp = () => {
                 data-temp-mail-org="0"
               />
             </div>
-            {errors?.type === "required" && (
+            {errors.name?.type === "required" && (
               <p className="text-red-500 mt-1.5">Please Provied Your Name</p>
             )}
             {/* Image */}
