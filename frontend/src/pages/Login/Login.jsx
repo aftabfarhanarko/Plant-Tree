@@ -9,15 +9,17 @@ const Login = () => {
   const { signIn, signInWithGoogle, loading, user, setLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-
   const from = location.state || '/'
 
   if (loading) return <LoadingSpinner />
   if (user) return <Navigate to={from} replace={true} />
 
+
   // form submit handler
   const handleSubmit = async event => {
     event.preventDefault()
+    console.log("This is UHgyfwe7u8ih");
+    
     const form = event.target
     const email = form.email.value
     const password = form.password.value
