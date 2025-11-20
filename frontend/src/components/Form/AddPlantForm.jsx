@@ -1,41 +1,71 @@
 import { useForm } from "react-hook-form";
-// import useAxiosSecure from "../../hooks/useAxiosSecure";
-import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
+import { imageUpload } from "../../utils";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const AddPlantForm = () => {
-  const {user} = useAuth();
+  const secureaxio = useAxiosSecure();
+  const { user } = useAuth();
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const imagePost = axios;
-  const handelPlant = (data) => {
-    console.log("Plants COunt ", data);
-    const plantImg = data.plantImage[0];
-    console.log(plantImg);
+  const {
+    // isPending,
+    // isError,
+    mutateAsync,
+    reset: mutationReset,
+  } = useMutation({
+    // mutationFn:async (payload) =>  await axios.post("http://localhost:3000/plants", payload),
+    mutationFn:async (payload) =>  await secureaxio.post("/plants", payload),
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success("Plant Added successfully");
+      mutationReset();
+    },
 
-    //  photo post
-    const fromData = new FormData();
-    fromData.append("image", plantImg);
-    const uriIBB = `https://api.imgbb.com/1/upload?key=${
-      import.meta.env.VITE_imge_hoset
-    }`;
+    // onError: (error) => {
+    //   console.log(error);
+    // },
+    onMutate: (payload) => {
+      console.log("I will post this data--->", payload);
+    },
 
-    imagePost
-      .post(uriIBB, fromData)
-      .then((res) => {
-        const plantPhoto =  res.data.data.url;
-       
+    retry: 3,
+  });
 
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handelPlant = async (data) => {
+    const { name, dicptions, quentey, price, category, plantImage } = data;
+    const imageFile = plantImage[0];
+    try {
+      const imageUrl = await imageUpload(imageFile);
+      // console.log("My Img Tree", imageUrl);
 
-    // axioss.post("plant")
+      const plantData = {
+        image: imageUrl,
+        name,
+        dicptions,
+        quantity: Number(quentey),
+        price: Number(price),
+        category,
+        seller: {
+          image: user?.photoURL,
+          name: user?.displayName,
+          email: user?.email,
+        },
+      };
+      await mutateAsync(plantData);
+      reset();
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.code)
+    }
   };
 
   return (

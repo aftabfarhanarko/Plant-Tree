@@ -47,14 +47,21 @@ async function run() {
     const db = client.db("plants");
     const plantsCollection = db.collection("plantsTree");
 
-    app.post("/plant", async (req, res) => {
+
+    app.post("/plants", async (req, res) => {
       const data = req.body;
+      console.log(data);
+      
       const result = await plantsCollection.insertOne(data);
+      
       res.status(200).json({
         message: "Plant Tree Saved DB",
         result,
       });
+      console.log(data,result);
+      
     });
+
 
     app.get("/plant", async (req, res) => {
       // const query = {};
