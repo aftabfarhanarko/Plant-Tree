@@ -22,22 +22,26 @@ const AddPlantForm = () => {
     mutateAsync,
     reset: mutationReset,
   } = useMutation({
-    // mutationFn:async (payload) =>  await axios.post("http://localhost:3000/plants", payload),
-    mutationFn:async (payload) =>  await secureaxio.post("/plants", payload),
-    onSuccess: (data) => {
-      console.log(data);
-      toast.success("Plant Added successfully");
-      mutationReset();
-    },
+    mutationFn: async (payload) =>
+      await axios.post("http://localhost:3000/plants", payload)
+    .then(res => {
+      toast.success("Flower Add Successfully");
+    })
+    // mutationFn:async (payload) =>  await secureaxio.post("/plants", payload),
+    // onSuccess: (data) => {
+    //   console.log(data);
+    //   toast.success("Plant Added successfully");
+    //   mutationReset();
+    // },
 
     // onError: (error) => {
     //   console.log(error);
     // },
-    onMutate: (payload) => {
-      console.log("I will post this data--->", payload);
-    },
+    // onMutate: (payload) => {
+    //   console.log("I will post this data--->", payload);
+    // },
 
-    retry: 3,
+    // retry: 3,
   });
 
   const handelPlant = async (data) => {
@@ -64,7 +68,7 @@ const AddPlantForm = () => {
       reset();
     } catch (err) {
       console.log(err);
-      toast.error(err?.code)
+      toast.error(err?.code);
     }
   };
 
