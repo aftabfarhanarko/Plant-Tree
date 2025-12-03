@@ -5,7 +5,7 @@ import useNormalAxios from "../../hooks/useNormalAxios";
 const PurchaseModal = ({ closeModal, isOpen, data }) => {
   const { user } = useAuth();
   const axiosNormal = useNormalAxios();
-  const { _id, name, price, category, quantity, dicptions, image } = data || {};
+  const { _id, name, price, category, quantity, dicptions,seller, image } = data || {};
 
   // Payment
   const handelPayment = async () => {
@@ -17,6 +17,7 @@ const PurchaseModal = ({ closeModal, isOpen, data }) => {
       dicptions,
       image,
       quantity,
+      seller,
       customer: {
         name: user?.displayName,
         email: user?.email,
@@ -73,30 +74,13 @@ const PurchaseModal = ({ closeModal, isOpen, data }) => {
             <div className="mt-2">
               <p className="text-sm text-gray-500">
                 Available Quantity : {quantity}
-                <div className="space-y-1 text-sm">
-                  <label htmlFor="quantity" className="block text-gray-600">
-                    Quantity
-                  </label>
-                  <input
-                    className="w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white"
-                    name="quantity"
-                    // {...register("quentey", { required: true })}
-                    type="number"
-                    placeholder="Available quantity"
-                  />
-                  {/* {errors.quentey?.type === "required" && (
-                    <p className="text-red-500 mt-1.5">
-                      Please Provied Plant Quantity
-                    </p>
-                  )} */}
-                </div>
               </p>
             </div>
 
             <div className="flex mt-4 justify-around">
               <button
                 type="button"
-                onClick={handelPayment} // এইখানে onClick এ function বসালাম
+                onClick={handelPayment}
                 className="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
               >
                 Pay
@@ -117,3 +101,16 @@ const PurchaseModal = ({ closeModal, isOpen, data }) => {
 };
 
 export default PurchaseModal;
+{
+  /* <div className="space-y-1 text-sm">
+  <label htmlFor="quantity" className="block text-gray-600">
+    Quantity
+  </label>
+  <input
+    className="w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white"
+    name="quantity"
+    type="number"
+    placeholder="Available quantity"
+  />
+</div>; */
+}
