@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 3000;
 
 // const admin = require('firebase-admin')
@@ -47,21 +47,18 @@ async function run() {
     const db = client.db("plants");
     const plantsCollection = db.collection("plantsTree");
 
-
     app.post("/plants", async (req, res) => {
       const data = req.body;
       console.log(data);
-      
+
       const result = await plantsCollection.insertOne(data);
-      
+
       res.status(200).json({
         message: "Plant Tree Saved DB",
         result,
       });
-      console.log(data,result);
-      
+      console.log(data, result);
     });
-
 
     app.get("/plant", async (req, res) => {
       // const query = {};
@@ -78,13 +75,22 @@ async function run() {
       });
     });
 
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    app.get("/plant/:id", async (req, res) => {
+      const { id } = req.params;
+      console.log(id);
+
+      const query = { _id: new ObjectId(id) };
+      const result = await plantsCollection.findOne(query);
+      res.status(200).json({
+        message: "One Plant Now",
+        result,
+      });
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
   } finally {
-    // Ensures that the client will close when you finish/error
   }
 }
 run().catch(console.dir);
