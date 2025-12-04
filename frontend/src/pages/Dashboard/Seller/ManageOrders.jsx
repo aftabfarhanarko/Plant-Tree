@@ -7,7 +7,7 @@ const ManageOrders = () => {
   const axiosNormal = useNormalAxios();
   const { user } = useAuth();
   const { data: order = [], isLoading } = useQuery({
-    queryKey: ["orderdata",],
+    queryKey: ["orderdata"],
     queryFn: async () => {
       const res = await axiosNormal.get(`manez-order?email=${user.email}`);
       return res?.data;
@@ -80,10 +80,9 @@ const ManageOrders = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    order.map(item =>  <SellerOrderDataRow  key={item._id} item={item}/>)
-                  }
-                 
+                  {order.map((item) => (
+                    <SellerOrderDataRow key={item._id} item={item} />
+                  ))}
                 </tbody>
               </table>
             </div>

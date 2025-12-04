@@ -75,7 +75,7 @@ const MyOrders = () => {
                 </thead>
                 <tbody>
                   {
-                    plants.map(item =>  <CustomerOrderDataRow key={item._id} item={item} />)
+                    plants.map(one =>  <CustomerOrderDataRow key={one._id} one={one} />)
                   }
                  
                 </tbody>

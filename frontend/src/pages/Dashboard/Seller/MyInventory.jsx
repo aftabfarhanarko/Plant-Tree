@@ -1,6 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
 import PlantDataRow from '../../../components/Dashboard/TableRows/PlantDataRow'
+import useAuth from '../../../hooks/useAuth';
+import useNormalAxios from '../../../hooks/useNormalAxios';
 
 const MyInventory = () => {
+  const axiosNormal = useNormalAxios();
+  const { user } = useAuth();
+  const { data: inventory = [], isLoading , refetch} = useQuery({
+    queryKey: ["orderdata"],
+    queryFn: async () => {
+      const res = await axiosNormal.get(`manez-order?email=${user.email}`);
+      
+      return res?.data;
+    },
+  });
+  console.log(inventory);
+
+  // if (isLoading) {
+  //   return <LodingSpi
+  // }
   return (
     <>
       <div className='container mx-auto px-4 sm:px-8'>
@@ -56,7 +74,10 @@ const MyInventory = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <PlantDataRow />
+                  {
+                    inventory.map(one => <PlantDataRow refetch={refetch} key={one._id} one={one} /> )
+                  }
+                 
                 </tbody>
               </table>
             </div>
