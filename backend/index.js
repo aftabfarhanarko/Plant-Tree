@@ -163,10 +163,31 @@ async function run() {
       }
 
       res.send({
-          transactionId: session.payment_intent,
-          orderId: order._id,
-        });
+        transactionId: session.payment_intent,
+        orderId: order._id,
+      });
     });
+
+    // customer order api
+    app.get("/customer-order", async (req, res) => {
+      const email = req.query.email;
+
+      const result = await paymentOrder.find({ customer: email }).toArray();
+      res.send(result);
+    });
+
+   
+    // maneaze order
+    app.get("/manez-order", async (req, res) => {
+      const email = req.query.email;
+
+      const result = await paymentOrder
+        .find({ "seller.email": email })
+        .toArray();
+      res.send(result);
+    });
+
+
 
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
