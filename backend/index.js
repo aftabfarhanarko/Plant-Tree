@@ -47,6 +47,7 @@ async function run() {
   try {
     const db = client.db("plants");
     const plantsCollection = db.collection("plantsTree");
+    const paymentOrder = db.collection("paymentOrder");
 
     app.post("/plants", async (req, res) => {
       const data = req.body;
@@ -105,23 +106,66 @@ async function run() {
               },
               unit_amount: paymentInfo?.price * 100,
             },
-            quantity: paymentInfo?.quantity,
+            quantity: 1,
           },
         ],
 
         customer_email: paymentInfo?.customer?.email,
         mode: "payment",
         metadata: {
-          plantId: String(paymentInfo?.plantId),
-          customer: JSON.stringify({
-            email: paymentInfo.customer.email,
-            name: paymentInfo.customer.name,
-          }),
+          plantId: paymentInfo?.plantId,
+          email: paymentInfo.customer.email,
         },
-        success_url: `${process.env.URL}/paymentSuccess`,
+        success_url: `${process.env.URL}/paymentSuccess?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.URL}/plant/${paymentInfo?.plantId}`,
       });
       res.send({ url: session.url });
+    });
+
+    app.post("/payment-success", async (req, res) => {
+      const { sessionId } = req.body;
+
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      const plant = await plantsCollection.findOne({
+        _id: new ObjectId(session.metadata.plantId),
+      });
+
+      const order = await paymentOrder.findOne({
+        transactionId: session.payment_intent,
+      });
+
+      if (session.status === "complete" && !order) {
+        // saved data DB
+        const orderInfo = {
+          plantId: session.metadata.plantId,
+          transactionId: session.payment_intent,
+          customer: session.metadata.email,
+          status: "pending",
+          image: plant.image,
+          name: plant.name,
+          quantity: 1,
+          price: session.amount_total / 100,
+          category: plant.category,
+          seller: plant.seller,
+        };
+
+        const result = await paymentOrder.insertOne(orderInfo);
+        await plantsCollection.updateOne(
+          {
+            _id: new ObjectId(session.metadata.plantId),
+          },
+          { $inc: { quantity: -1 } }
+        );
+        return res.send({
+          transactionId: session.payment_intent,
+          orderId: result.insertedId,
+        });
+      }
+
+      res.send({
+          transactionId: session.payment_intent,
+          orderId: order._id,
+        });
     });
 
     console.log(
