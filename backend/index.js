@@ -181,11 +181,23 @@ async function run() {
     app.get("/manez-order", async (req, res) => {
       const email = req.query.email;
 
-      const result = await paymentOrder
+      const result = await plantsCollection
         .find({ "seller.email": email })
         .toArray();
       res.send(result);
     });
+
+    app.delete("/maneaz-my-plant/:id", async (req,res) => {
+      const {id} = req.params;
+      const query = {_id: new ObjectId(id)};
+      const result = await plantsCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    app.patch("/plant-updeat-seller/:id", async (req,res) => {
+      const {id}  =  req.params;
+      const {} = req.body;
+    })
 
 
 
