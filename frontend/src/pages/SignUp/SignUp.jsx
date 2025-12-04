@@ -1,12 +1,16 @@
-import {  Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 import { TbFidgetSpinner } from "react-icons/tb";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const SignUp = () => {
+  const [show, setShow] = useState(true);
   const {
     register,
     handleSubmit,
@@ -66,129 +70,201 @@ const SignUp = () => {
     }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen bg-white">
-      <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-lime-200 via-white to-lime-100 relative overflow-hidden">
+      {/* Animated Background Blobs */}
+      <div className="absolute w-72 h-72 bg-lime-300/30 rounded-full blur-3xl top-10 left-10 animate-pulse"></div>
+      <div className="absolute w-96 h-96 bg-white/40 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
+
+      <div
+        className="flex flex-col w-full max-w-md p-10 rounded-2xl shadow-2xl backdrop-blur-2xl bg-white/60 border border-white/40 
+      hover:shadow-[0_0_50px_rgba(163,230,53,0.35)] transition-all duration-500 relative z-10"
+      >
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-gray-700 hover:text-lime-600 font-medium  transition-all duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-5 h-5 transform transition-transform duration-200 group-hover:-translate-x-1"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+              />
+            </svg>
+            Back Home
+          </Link>
+        {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="my-3 text-4xl font-bold">Sign Up</h1>
-          <p className="text-sm text-gray-400">Welcome to PlantNet</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-wide drop-shadow-md">
+            Sign Up
+          </h1>
+          <p className="text-sm mt-5 text-gray-700  opacity-80">
+            Welcome to PlantNet 🌿
+          </p>
         </div>
+
+        {/* Form */}
         <form
           onSubmit={handleSubmit(handelSignUp)}
           noValidate=""
-          action=""
-          className="space-y-6 ng-untouched ng-pristine ng-valid"
+          className="space-y-6"
         >
           <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm">
-                Name
+            {/* Name */}
+            <div className="group">
+              <label className="block mb-1 text-sm font-semibold text-gray-800">
+                Your Name
               </label>
               <input
                 type="text"
                 {...register("name", { required: true })}
-                placeholder="Enter Your Name Here"
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
-                data-temp-mail-org="0"
+                placeholder="Enter your name"
+                className="
+              w-full px-4 py-3 border border-lime-500 rounded-lg bg-gray-100 
+              focus:ring-2 focus:ring-lime-500 focus:bg-white
+              shadow-sm group-hover:shadow-lime-200 focus:outline-none group-hover:shadow-lg 
+              transition-all duration-300
+            "
               />
+              {errors.name?.type === "required" && (
+                <p className="text-red-500 text-xs mt-1">
+                  Please provide your name.
+                </p>
+              )}
             </div>
-            {errors.name?.type === "required" && (
-              <p className="text-red-500 mt-1.5">Please Provied Your Name</p>
-            )}
-            {/* Image */}
+
+            {/* Profile Image */}
             <div>
-              <label
-                htmlFor="image"
-                className="block mb-2 text-sm font-medium text-gray-700"
-              >
+              <label className="block mb-1 text-sm font-semibold text-gray-800">
                 Profile Image
               </label>
               <input
                 type="file"
                 {...register("profileI")}
-                id="image"
                 accept="image/*"
-                className="block w-full text-sm text-gray-500
-      file:mr-4 file:py-2 file:px-4
-      file:rounded-md file:border-0
-      file:text-sm file:font-semibold
-      file:bg-lime-50 file:text-lime-700
-      hover:file:bg-lime-100
-      bg-gray-100 border border-dashed border-lime-300 rounded-md cursor-pointer
-      focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-400
-      py-2"
+                className="
+              block w-full text-sm border-lime-400 focus:outline-none text-gray-600 file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0 file:bg-lime-50 file:text-lime-700
+              hover:file:bg-lime-100 bg-gray-100 border border-dashed border-lime-400 
+              rounded-lg cursor-pointer focus:ring-2 focus:outline-none focus:ring-lime-400 py-2
+              transition-all duration-300
+            "
               />
-              <p className="mt-1 text-xs text-gray-400">
-                PNG, JPG or JPEG (max 2MB)
+              <p className="mt-1 text-xs text-gray-500">
+                PNG, JPG, JPEG (Max 2MB)
               </p>
             </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm">
-                Email address
+
+            {/* Email */}
+            <div className="group">
+              <label className="block mb-1 text-sm font-semibold text-gray-800">
+                Email Address
               </label>
               <input
                 type="email"
-                name="email"
-                id="email"
                 {...register("email")}
-                placeholder="Enter Your Email Here"
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
-                data-temp-mail-org="0"
+                placeholder="Enter your email"
+                className="
+              w-full px-4 py-3 border border-lime-400 rounded-lg bg-gray-100
+              focus:ring-2 focus:ring-lime-500 focus:outline-none focus:bg-white
+              shadow-sm group-hover:shadow-lime-200 group-hover:shadow-lg
+              transition-all duration-300
+            "
               />
             </div>
-            <div>
-              <div className="flex justify-between">
-                <label htmlFor="password" className="text-sm mb-2">
-                  Password
-                </label>
-              </div>
+
+            {/* Password */}
+            <div className="group relative">
+              <label className="block mb-1 text-sm font-semibold text-gray-800">
+                Password
+              </label>
               <input
-                type="password"
-                name="password"
-                autoComplete="new-password"
+                type={show ? "password" : "text"}
                 {...register("password")}
                 placeholder="*******"
-                className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
+                className="
+              w-full px-4 py-3 border rounded-lg border-lime-400 bg-gray-100
+              focus:ring-2 focus:ring-lime-500 focus:outline-none focus:bg-white
+              shadow-sm group-hover:shadow-lime-200 group-hover:shadow-lg
+              transition-all duration-300
+            "
               />
+              <div
+                className=" absolute right-3 top-10.5"
+                onClick={() => setShow(!show)}
+              >
+                {show ? <FaEyeSlash /> : <FaEye />}
+              </div>
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              className="bg-lime-500 w-full rounded-md py-3 text-white"
-            >
-              {loading ? (
-                <TbFidgetSpinner className="animate-spin m-auto" />
-              ) : (
-                "Continue"
-              )}
-            </button>
-          </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            className="
+          w-full py-3 rounded-xl bg-gradient-to-r from-lime-500 to-lime-600 
+          text-white text-lg font-semibold shadow-lg
+          hover:shadow-[0_0_25px_rgba(163,230,53,0.7)]
+          hover:scale-[1.02] active:scale-95
+          transition-all duration-300
+        "
+          >
+            {loading ? (
+              <TbFidgetSpinner className="animate-spin m-auto" />
+            ) : (
+              "Continue"
+            )}
+          </button>
         </form>
-        <div className="flex items-center pt-4 space-x-1">
-          <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
-          <p className="px-3 text-sm dark:text-gray-400">
-            Signup with social accounts
-          </p>
-          <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 my-6">
+          <div className="h-px flex-1 bg-gray-300"></div>
+          <p className="text-xs text-gray-600">OR</p>
+          <div className="h-px flex-1 bg-gray-300"></div>
         </div>
+
+        {/* Google Button (Premium) */}
         <div
           onClick={handleGoogleSignIn}
-          className="flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer"
+          className="
+        group relative flex items-center justify-center gap-3 py-3 rounded-xl cursor-pointer bg-gray-100 
+        shadow-[6px_6px_15px_#cfcfcf,-6px_-6px_15px_#ffffff]
+        hover:shadow-[10px_10px_30px_#cfcfcf,-10px_-10px_30px_#ffffff]
+        border border-gray-200 transition-all duration-300
+      "
         >
-          <FcGoogle size={32} />
-
-          <p>Continue with Google</p>
+          <span
+            className="
+          absolute inset-0 rounded-xl bg-gradient-to-br
+          from-white/10 to-lime-300/30 blur-xl opacity-0
+          group-hover:opacity-100 transition duration-700
+        "
+          />
+          <FcGoogle
+            size={28}
+            className="relative z-10 group-hover:scale-125 transition-transform duration-500"
+          />
+          <p className="relative z-10 text-gray-800 font-semibold tracking-wide group-hover:text-lime-600 transition duration-300">
+            Continue with Google
+          </p>
         </div>
-        <p className="px-6 text-sm text-center text-gray-400">
+
+        {/* Footer */}
+        <p className="mt-6 text-center text-sm text-gray-700">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="hover:underline hover:text-lime-500 text-gray-600"
+            className="text-lime-600 font-semibold hover:underline"
           >
             Login
           </Link>
-          .
         </p>
       </div>
     </div>
