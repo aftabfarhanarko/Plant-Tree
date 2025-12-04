@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 3000;
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // const admin = require('firebase-admin')
 // const decoded = Buffer.from(process.env.FB_SERVICE_KEY, 'base64').toString(
@@ -77,7 +78,7 @@ async function run() {
 
     app.get("/plant/:id", async (req, res) => {
       const { id } = req.params;
-      console.log(id);
+      // console.log(id);
 
       const query = { _id: new ObjectId(id) };
       const result = await plantsCollection.findOne(query);
@@ -85,6 +86,42 @@ async function run() {
         message: "One Plant Now",
         result,
       });
+    });
+
+    // Payment Get way
+    app.post("/create-checkout-session", async (req, res) => {
+      const paymentInfo = req.body;
+      console.log(paymentInfo);
+
+      const session = await stripe.checkout.sessions.create({
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: paymentInfo?.name,
+                images: [paymentInfo?.image],
+                description: paymentInfo?.dicptions,
+              },
+              unit_amount: paymentInfo?.price * 100,
+            },
+            quantity: paymentInfo?.quantity,
+          },
+        ],
+
+        customer_email: paymentInfo?.customer?.email,
+        mode: "payment",
+        metadata: {
+          plantId: String(paymentInfo?.plantId),
+          customer: JSON.stringify({
+            email: paymentInfo.customer.email,
+            name: paymentInfo.customer.name,
+          }),
+        },
+        success_url: `${process.env.URL}/paymentSuccess`,
+        cancel_url: `${process.env.URL}/plant/${paymentInfo?.plantId}`,
+      });
+      res.send({ url: session.url });
     });
 
     console.log(

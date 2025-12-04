@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
         element: <PlantDetails />,
       },
       {
-        path: "paymentSuccess",
+        path: "/paymentSuccess",
         element: <PaymentSuccess />,
       },
     ],

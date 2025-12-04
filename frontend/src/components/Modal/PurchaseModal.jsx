@@ -5,7 +5,8 @@ import useNormalAxios from "../../hooks/useNormalAxios";
 const PurchaseModal = ({ closeModal, isOpen, data }) => {
   const { user } = useAuth();
   const axiosNormal = useNormalAxios();
-  const { _id, name, price, category, quantity, dicptions,seller, image } = data || {};
+  const { _id, name, price, category, quantity, dicptions, seller, image } =
+    data || {};
 
   // Payment
   const handelPayment = async () => {
@@ -26,8 +27,9 @@ const PurchaseModal = ({ closeModal, isOpen, data }) => {
     };
 
     const res = await axiosNormal.post("create-checkout-session", paymentInfo);
-
-    console.log("Payment Info:", res);
+    
+    window.location.href = res.data.url
+    console.log("Payment Info:", res.data.url);
   };
 
   return (
